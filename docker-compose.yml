@@ -1,0 +1,38 @@
+version: '2.0'
+services:
+  postgres-db:
+    image: postgres:alpine
+    hostname: postgres-db
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - postgres-db-data:/var/lib/postgresql/data
+      - postgres-db-logs:/var/log/postgresql
+      - ./shared:/shared
+  mysql-db:
+    image: mysql
+    hostname: mysql-db
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    command: --default-authentication-plugin=mysql_native_password --secure-file-priv=/shared
+    volumes:
+      - mysql-db-data:/var/lib/mysql
+      - ./shared:/shared
+  adminer:
+    image: adminer
+    hostname: adminer
+    container_name: adminer
+    restart: always
+    environment:
+      ADMINER_PLUGINS: 'json-column'
+    ports:
+      - 8080:8080
+volumes:
+  mysql-db-data:
+  postgres-db-data:
+  postgres-db-logs:
